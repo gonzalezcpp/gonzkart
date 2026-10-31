@@ -15,6 +15,28 @@
       before any game code.
     -->
     <script src="coi-serviceworker.js"></script>
+    <script>
+      // A service worker can only isolate pages it already controls, so the
+      // very first visit always runs non-isolated and the wasm refuses to
+      // start. Reload once as soon as the worker takes over. The counter stops
+      // it from looping if isolation still fails for some reason.
+      (function () {
+        if (window.crossOriginIsolated || !("serviceWorker" in navigator)) return;
+        var KEY = "gonzkart_coi_reloads";
+        if (parseInt(sessionStorage.getItem(KEY) || "0", 10) >= 2) return;
+        var reloading = false;
+        function reloadOnce() {
+          if (reloading) return;
+          reloading = true;
+          sessionStorage.setItem(KEY, String(parseInt(sessionStorage.getItem(KEY) || "0", 10) + 1));
+          location.reload();
+        }
+        navigator.serviceWorker.addEventListener("controllerchange", reloadOnce);
+        navigator.serviceWorker.ready.then(function (registration) {
+          if (registration.active && !navigator.serviceWorker.controller) reloadOnce();
+        }).catch(function () {});
+      })();
+    </script>
 
     <script src="game/supertuxkart.js"></script>
     <script>
