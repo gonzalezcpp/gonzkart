@@ -1,0 +1,6 @@
+# nothing generated lives here: everything in this folder is the site itself.
+# keep the tree clean of editor and OS noise instead.
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
