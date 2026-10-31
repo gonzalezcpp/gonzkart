@@ -263,7 +263,9 @@ function seed_user_config() {
     }
   } catch (e) { /* ignore */ }
   const dir = home + "/.config/supertuxkart/config-0.10";
-  for (const d of [home + "/.config", home + "/.config/supertuxkart", dir]) {
+  // mkdir is not recursive here: on a brand new profile /home is empty, so
+  // /home/web_user has to be created too or every later mkdir fails.
+  for (const d of [home, home + "/.config", home + "/.config/supertuxkart", dir]) {
     try { FS.mkdir(d); } catch (e) { /* already exists */ }
   }
   const file = dir + "/config.xml";
